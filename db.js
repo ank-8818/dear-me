@@ -1,4 +1,3 @@
-import { exec } from "node:child_process";
 import { DatabaseSync } from "node:sqlite";
 
 const db = new DatabaseSync("dear-me.db");
@@ -13,4 +12,3 @@ db.exec(`
 `);
 
 export default db;
-//    console.log(db.prepare("SELECT name FROM sqlite_master").all());
