@@ -1,0 +1,38 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="intro">
+  <h1>Dear Me,</h1>
+  <p>A place to pour it all out.</p>
+</section>
+
+<img class="divider" src="/images/logo-and-dividers/divider.svg" alt="">
+
+<section class="feed">
+
+    <% posts.forEach(post => { %>
+        <article class="post-card <%= (post.mood) ? post.mood.colorClass : "" %>">
+            <div class="post-card__head">
+
+                <% if (post.mood) { %>
+                    <img class="post-card__sticker" src="<%= post.mood.image %>" alt="<%= post.mood.label %>">
+                <% } %>
+
+                <div>                    
+                    <h2 class="post-card__title"><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
+                    <time class="post-card__date"><%= post.createdAt.toLocaleDateString("en-GB", {dateStyle: "medium"}) %></time>
+                </div>
+            </div>
+            
+            <p class="post-card__preview"><%= post.body%></p>
+            <a class="btn" href="/posts/<%= post.id %>">Read more</a>
+            
+        </article>
+    <% }) %>
+
+    
+                
+</section>
+
+
+
+<%- include("./partials/footer.ejs") %>

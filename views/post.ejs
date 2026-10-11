@@ -1,0 +1,24 @@
+<%- include("./partials/header.ejs") %>
+
+<article class="post-page">
+
+    <div class="post-page__head">
+        <% if (post.mood) { %>
+            <img class="post-page__sticker" src="<%= post.mood.image %>" alt="<%= post.mood.label %>">
+        <% } %>
+
+        <div>
+            <h1><%= post.title %></h1>
+            <time class="post-card__date"><%= post.createdAt.toLocaleDateString("en-GB", {dateStyle: "medium"}) %></time>
+        </div>
+    </div>
+
+    
+
+    <p class="post-page__body"><%= post.body %></p>
+
+    <a class="btn" href="/">Back to all thoughts</a>
+        
+</article>
+
+<%- include("./partials/footer.ejs") %>

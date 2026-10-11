@@ -1,0 +1,49 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="compose">
+
+    <% if (error) { %>
+        <p class="form-error" role="alert"><%= error %></p>
+    <% } %>
+
+    <form action="/compose" method="POST">
+    
+        <div class="field">
+            <label for="title">
+                <input type="text" id="title" name="title" maxlength="80" required value="<%= title %>" placeholder="<%= placeholders.title %>" aria-label="Title">
+            </label>
+        </div>
+
+        <div class="field">
+            <label for="body">
+                <textarea id="body" name="body" required placeholder="<%= placeholders.body %>" aria-label="Your thoughts"><%= body %></textarea>
+            </label>
+        </div>
+
+        <fieldset class="sticker-picker">
+            <legend>How does this feel?</legend>
+
+            <div class="sticker-grid">
+                <label class="sticker-option sticker-option--none">
+                    <input type="radio" name="moodSlug" value="" <%= !moodSlug ? "checked" : "" %> />
+                    <span>No sticker</span>
+                </label>
+
+                <% moods.forEach(mood => { %>
+                    <label class="sticker-option" title="<%= mood.label %>">
+                        <input type="radio" name="moodSlug" value="<%= mood.slug %>" <%= moodSlug === mood.slug ? "checked" : "" %> />
+                        <img src="<%= mood.image %>" alt="<%= mood.label %>" />
+                    </label>
+                <% }) %>
+            </div>
+
+        </fieldset>
+
+
+        <button type="submit" class="btn btn--solid"><%= placeholders.button %></button>
+    </form>
+</section>
+
+
+
+<%- include("./partials/footer.ejs") %>

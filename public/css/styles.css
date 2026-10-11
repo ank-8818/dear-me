@@ -1,0 +1,485 @@
+/*  ----------------- 1. Tokens ( color palette) -----------------  */
+:root {
+  --page: #F5EBDD;
+  --card: #FBF5EC;
+  --text: #413333;
+  --text-soft: #6A5A5A;
+  --blue: #315B8C;
+  --blue-hover: #234468;
+  --accent: #F2765E;
+  --accent-hover: #E05E45;
+  --border: #E3D2BD;
+  --lilac-pale: #E9E0EE;
+  --sage: #B5CDBE;
+  --danger: #A8433A;
+
+
+  /*  Sticker ring colors  */
+  --mood-warm: #E0583C;     /* angry, overwhelmed */
+  --mood-blue: #7092BE;     /* anxious, sad, drifting-attention */
+  --mood-brown: #A28B6F;    /* exhausted, tired, tired-but-pushing */
+  --mood-teal: #5BB097;     /* hopeful, peaceful, good-drink */
+  --mood-yellow: #F4B23A;   /* happy, hilarious, winning-award */
+  --mood-pink: #F2A7BB;     /* lonely, in-the-soft-era */
+  --mood-coral: #F2765E;    /* confident, good-food, things-going-smoothly */
+  --mood-lilac: #B191D6;    /* curious */
+
+  --radius: 16px;
+  --gap: 24px;
+
+  /*  Font family  */
+  --font-head: 'Fraunces', Georgia, serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+
+/* ------------------ 2. Base ----------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 0.5rem;
+}
+
+a {
+  color: var(--blue);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--blue-hover);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline:  3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+
+/*  ---------------------- 3. Layout -------------------- */
+.container {
+  width: min(100% - 2rem, 960px);
+  margin-inline: auto;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  width: 180px;
+  min-width: 150px;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.site-nav a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+  color: var(--blue-hover);
+}
+
+.site-nav a[aria-current="page"] {        /*  DOUBT- SEE AGAIN  */
+  border-bottom-color: var(--accent);
+}
+
+.intro {
+  text-align: center;
+  padding: 40px 0 8px;
+}
+
+.intro h1{
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.intro p {
+  margin: 0 auto;
+  max-width: 52ch;
+  color: var(--text-soft);
+}
+
+.divider {
+  width: min(300px, 70%);
+  margin: 30px auto;
+}
+
+.feed {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  padding-bottom: 48px;
+}
+
+.site-footer {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-soft);
+  border-top: 1px solid var(--border);
+}
+
+/*  Tablet width and below: one column  */
+@media (max-width: 768px) {
+  .feed {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    flex-direction: column;
+  }
+}
+
+
+/*  ------------------ 4.Components --------------------  */
+
+/*  Mood filter chips above the feed  */
+.mood-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.chip {
+  padding: 4px 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--lilac-pale);
+  color: var(--text);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.chip:hover {
+  border-color: var(--blue);
+  color: var(--blue-hover);
+}
+
+.chip--sage {
+  background: var(--sage);
+}
+
+.post-card {    /*add one mood-* class to tint the top edge- DOUBT*/
+  --mood: var(--border);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--mood);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.mood-warm   { --mood: var(--mood-warm); }
+.mood-blue   { --mood: var(--mood-blue); }
+.mood-brown  { --mood: var(--mood-brown); }
+.mood-teal   { --mood: var(--mood-teal); }
+.mood-yellow { --mood: var(--mood-yellow); }
+.mood-pink   { --mood: var(--mood-pink); }
+.mood-coral  { --mood: var(--mood-coral); }
+.mood-lilac  { --mood: var(--mood-lilac); }
+
+.post-card__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.post-card__sticker {
+  width: 84px;
+  height: 84px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.post-card__title {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.post-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-card__title a:hover {
+  color: var(--blue-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.post-card__date {
+  font-size: 0.875rem;
+  color: var(--text-soft);
+}
+
+.post-card__preview {
+  margin: 0 0 16px;
+  overflow: hidden;
+  position: relative;
+  max-height: 8em;      /* 5 x line height of 1.6*/
+}
+
+.post-card.is-truncated .post-card__preview::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5em;
+  background: linear-gradient(to bottom, transparent, var(--card));
+}
+
+.post-card:not(.is-truncated) .btn {
+  display: none;
+}
+
+
+.post-page, .compose {
+  max-width: 680px;
+  margin: 40px auto
+}
+
+.post-page__head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.post-page__sticker {
+  width: 120px;
+  height: 120px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.post-page h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.post-page__body {
+  white-space: pre-wrap;
+  margin-bottom: 32px;
+}
+
+.post-card__head > div {
+  min-width: 0;
+}
+
+.post-card__title, .post-card__preview, .post-page h1, .post-page__body {
+  overflow-wrap: anywhere;
+}
+
+
+
+@media (max-width: 480px) {
+  .post-card__sticker {
+    height: 72px;
+    width: 72px;
+  }
+
+  .post-card__title {
+    font-size: 1rem;
+  }
+
+  .post-card p {
+    font-size: 0.9rem;
+  }
+}
+
+
+/*  Error */
+.form-error {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  background: var(--lilac-pale);
+  border-left: 4px solid var(--danger);
+  border-radius: 12px;
+}
+
+
+/*  Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border: 2px solid var(--blue);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--blue);
+  color: #fff;
+}
+
+.btn--solid {
+  background: var(--blue);
+  color: #fff;
+}
+
+.btn--solid:hover {
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
+}
+
+.btn--danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.btn--danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+
+/*  ---------------- Forms (for the compose page) --------------- */
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input, .field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+}
+
+.field textarea {
+  min-height: 220px;
+  resize: vertical;
+}
+
+.field input:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--lilac-pale);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}
+
+
+/*  ------------------ Stickers ------------------  */
+.sticker-picker {
+  border: 0;
+  padding: 0;
+  margin: 0 0 28px;
+}
+
+.sticker-picker legend {
+  font-family: var(--font-head);
+  font-weight: 500;
+  font-size: 1.125rem;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.sticker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.sticker-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.sticker-option img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/*  to hide the dot but keep it usable with the keyboard  */
+.sticker-option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.sticker-option input:checked + img {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.sticker-option input:focus-visible + img, .sticker-option input:focus-visible + span {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.sticker-option--none span {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+}
+
+.sticker-option--none input:checked + span {
+  background: var(--lilac-pale);
+  border-color: var(--blue);
+}
