@@ -13,3 +13,4 @@ db.exec(`
 `);
 
 export default db;
+//    console.log(db.prepare("SELECT name FROM sqlite_master").all());

@@ -1,4 +1,4 @@
-let nextId = 4;
+import db from "./db.js";
 
 const posts = [
     {
@@ -31,16 +31,18 @@ export function getPosts() {
 }
 
 export function addPost({title, body, moodSlug}) {
-    const newPost = {
-        id: String(nextId++),
-        title: title,
-        body: body,
-        moodSlug: moodSlug,
-        createdAt: new Date()
-    }
+    // const newPost = {
+    //     id: String(nextId++),
+    //     title: title,
+    //     body: body,
+    //     moodSlug: moodSlug,
+    //     createdAt: new Date()
+    // }
 
-    posts.push(newPost);
-    return newPost;
+    // return newPost;
+
+    const statement = db.prepare("INSERT INTO posts (title, body, mood_slug, created_at) VALUES (?, ?, ?, ?)");
+    statement.run(title, body, moodSlug, new Date().toISOString());
 }
 
 
