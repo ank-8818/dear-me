@@ -1,6 +1,6 @@
 import express from "express";
 import { moods, getMoodBySlug } from "./moods.js";
-import { getPostById, getPosts, addPost } from "./data.js";
+import { getPostById, getPostsByMood, getPosts, addPost } from "./data.js";
 import { getBodyError, getEmptyTitleError, getExcessTitleError, placeholderText } from "./prompts.js";
 import "./db.js";
 
@@ -23,9 +23,10 @@ function withMood(post) {
 
 // Gets home page
 app.get("/", (req, res) => {
-    const posts = getPosts();
-    const sorted = [...posts.map(withMood)].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    res.render("home", { posts: sorted });
+    const activeMood = getMoodBySlug(req.query.mood) || null;
+
+    const posts = activeMood ? getPostsByMood(activeMood.slug) : getPosts();
+    res.render("home", { posts: posts.map(withMood), moods, activeMood });
     
 });
 

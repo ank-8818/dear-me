@@ -13,6 +13,12 @@
   --sage: #B5CDBE;
   --danger: #A8433A;
 
+  /*  Time tag colors */
+  --time-yellow: #F7E1A1;
+  --time-coral: #F9C9BD;
+  --time-pink: #F6D0DA;
+  --time-blue: #C9D8EA;
+
 
   /*  Sticker ring colors  */
   --mood-warm: #E0583C;     /* angry, overwhelmed */
@@ -175,22 +181,91 @@ img {
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
   padding: 4px 16px;
+  border: 1.5px solid var(--blue);
   border-radius: 999px;
-  border: 1px solid transparent;
-  background: var(--lilac-pale);
-  color: var(--text);
+  background: transparent;
   font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+.chip:has(.chip-sticker) {
+  padding-left: 6px;
+}
+
+.chip__sticker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+
 .chip:hover {
-  border-color: var(--blue);
+  background: var(--lilac-pale);
+  color: var(--blue-hover);
+  border-color: var(--blue-hover);
+}
+
+.chip[aria-current="page"] {
+  background: var(--blue);
+  color: #fff;
+}
+
+.chip[aria-current="page"]:hover {
+  background: var(--blue-hover);
+}
+
+.filter-panel {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.filter-panel summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--blue);
+  padding: 8px 0;
+}
+
+.filter-panel summary:hover {
   color: var(--blue-hover);
 }
 
-.chip--sage {
-  background: var(--sage);
+.filter-panel .mood-filter {
+  margin: 12px 0 0;
+}
+
+.filter-status {
+  text-align: center;
+  margin: 0 0 24px;
+  color: var(--text-soft);
+}
+
+.filter-status a {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 12px;
+  border: 1.5px solid var(--blue);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.filter-status a:hover {
+  background: var(--blue); color: #fff;
+}
+
+.feed-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-soft);
+  padding: 40px 0;
 }
 
 .post-card {    /*add one mood-* class to tint the top edge- DOUBT*/
@@ -483,3 +558,30 @@ img {
   background: var(--lilac-pale);
   border-color: var(--blue);
 }
+
+
+/*  ------------------------ Time tags ---------------------- */
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid rgba(65, 51, 51, 0.18);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.tag--topic {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-soft);
+}
+
+.time-lilac  { background: var(--lilac-pale); }
+.time-sage   { background: var(--sage); }
+.time-yellow { background: var(--time-yellow); }
+.time-coral  { background: var(--time-coral); }
+.time-pink   { background: var(--time-pink); }
+.time-blue   { background: var(--time-blue); }
+.time-deep   { background: var(--blue); border-color: var(--blue); color: #fff; }

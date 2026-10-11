@@ -7,7 +7,29 @@
 
 <img class="divider" src="/images/logo-and-dividers/divider.svg" alt="">
 
+<details class="filter-panel">
+    <summary>Filter by feelings</summary>
+
+    <div class="mood-filter">
+        <a class="chip" href="/" <%- !activeMood ? 'aria-current="page"' : "" %>>All</a>
+        <% moods.forEach(mood => { %>
+            <a class="chip" href="/?mood=<%= mood.slug %>" <%- activeMood && activeMood.slug === mood.slug ? 'aria-current="page"' : "" %>>
+                <img class="chip__sticker" src="<%= mood.image %>" alt="">
+                <%= mood.label %>
+            </a>
+        <% }) %>
+    </div>
+</details>
+
+<% if (activeMood) { %>
+    <p class="filter-status">Showing: <strong><%= activeMood.label %></strong> <a href="/" aria-label="Clear filter">✕ Clear</a></p>
+<% } %>
+
 <section class="feed">
+
+    <% if (posts.length === 0) { %>
+        <p class="feed-empty">Nothing here yet. Be the first to write something.</p>
+    <% } %>
 
     <% posts.forEach(post => { %>
         <article class="post-card <%= (post.mood) ? post.mood.colorClass : "" %>">

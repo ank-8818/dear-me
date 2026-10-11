@@ -17,6 +17,13 @@ export function getPosts() {
     return rows.map(rowToPost);
 }
 
+export function getPostsByMood(slug) {
+    const statement = db.prepare(
+        "SELECT * FROM posts WHERE mood_slug = ? ORDER BY created_at DESC, id DESC"
+    );
+    return statement.all(slug).map(rowToPost);
+}
+
 export function addPost({title, body, moodSlug}) {
    
     const statement = db.prepare("INSERT INTO posts (title, body, mood_slug, created_at) VALUES (?, ?, ?, ?)");
