@@ -1,10 +1,11 @@
 import express from "express";
 import { moods, getMoodBySlug } from "./moods.js";
-import { getPostById, getPostsByMood, getPosts, addPost } from "./data.js";
+import { getPostById, getPosts, addPost } from "./data.js";
 import { getBodyError, getEmptyTitleError, getExcessTitleError, getLongCWError, getTooManyTagsError, getHomePageQuote, placeholderText } from "./prompts.js";
 import { timeSlots, getTimeTagBySlug } from "./timeTags.js";
 import { tagCategories, getTagBySlug } from "./tags.js";
 import "./db.js";
+
 
 const app = express();
 const port = 3000;
@@ -12,6 +13,10 @@ const port = 3000;
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));
+app.use((req, res, next) => {
+    res.locals.currentPath = req.path;
+    next();
+});
 
 
 // Helper function
@@ -28,9 +33,16 @@ function withDetails(post) {
 // Gets home page
 app.get("/", (req, res) => {
     const activeMood = getMoodBySlug(req.query.mood) || null;
+    const activeTag = getTagBySlug(req.query.tag) || null;
+    
+    let q = null;
+    if (typeof req.query.q === "string") {
+        q = req.query.q.trim().slice(0, 100);
+        if (!q) q = null;
+    }
 
-    const posts = activeMood ? getPostsByMood(activeMood.slug) : getPosts();
-    res.render("home", { posts: posts.map(withDetails), moods, activeMood, quote: getHomePageQuote()});
+    const posts = getPosts({ moodSlug: activeMood?.slug, tagSlug: activeTag?.slug, q});
+    res.render("home", { posts: posts.map(withDetails), moods, activeMood, activeTag, q: q || "", quote: getHomePageQuote()});
     
 });
 
@@ -126,6 +138,12 @@ app.post("/compose", (req, res) => {
     res.redirect("/");
 });
 
+
+
+//About page
+app.get("/about", (req, res) => {
+    res.render("about");
+});
 
 
 app.listen(port, () => {

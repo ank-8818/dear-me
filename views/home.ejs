@@ -7,13 +7,20 @@
 
 <img class="divider" src="/images/logo-and-dividers/divider.svg" alt="">
 
+<form class="search" action="/" method="GET" role="search">
+    <input type="search" name="q" value="<%= q %>" maxlength="100" aria-label="Search posts" placeholder="Search thoughts">
+    <% if (activeMood) { %> <input type="hidden" name="mood" value="<%= activeMood.slug %>"> <% } %>
+    <% if (activeTag) { %> <input type="hidden" name="tag" value="<%= activeTag.slug %>"> <% } %>
+    <button type="submit" class="btn">Search</button>
+</form>
+
 <details class="filter-panel">
     <summary>Filter by feelings</summary>
 
     <div class="mood-filter">
         <a class="chip" href="/" <%- !activeMood ? 'aria-current="page"' : "" %>>All</a>
         <% moods.forEach(mood => { %>
-            <a class="chip" href="/?mood=<%= mood.slug %>" <%- activeMood && activeMood.slug === mood.slug ? 'aria-current="page"' : "" %>>
+            <a class="chip" href="/?mood=<%= mood.slug %><%= activeTag ? '&tag=' + activeTag.slug : '' %>" <%- activeMood && activeMood.slug === mood.slug ? 'aria-current="page"' : "" %>>
                 <img class="chip__sticker" src="<%= mood.image %>" alt="">
                 <%= mood.label %>
             </a>
@@ -21,16 +28,29 @@
     </div>
 </details>
 
-<% if (activeMood) { %>
-    <p class="filter-status">Showing: <strong><%= activeMood.label %></strong> <a href="/" aria-label="Clear filter">✕ Clear</a></p>
+<% const activeFilters = []; %>
+<% if (activeMood) activeFilters.push(activeMood.label); %>
+<% if (activeTag) activeFilters.push(activeTag.label); %>
+<% if (q) activeFilters.push('"' + q + '"'); %>
+
+<% if (activeFilters.length > 0) { %>
+    <p class="filter-status">
+        Showing: <strong><%= activeFilters.join(" + ") %></strong>
+        <a href="/" aria-label="Clear filters">✕ Clear</a>
+    </p>
 <% } %>
+
 
 <section class="feed">
 
     <% if (posts.length === 0) { %>
         <div class="feed-empty">
-            <img src="/images/logo-and-dividers/empty-carton.png" alt="" aria-hidden="true">
-            <p>Nothing here yet. Be the first to write something.</p>
+            <img src="/images/logo-and-dividers/empty-carton.png" alt="">
+            <% if (activeMood || activeTag || q) { %>
+                <p>Nothing matches that yet. <a href="/">Show everything</a></p>
+            <% } else { %>
+                <p>Nothing here yet. Be the first to write something.</p>
+            <% } %>
         </div>
     <% } %>
 
@@ -66,7 +86,12 @@
 
                         <% if (showTopics) { %>
                             <% post.tags.forEach(tag => { %>
-                                <span class="tag tag--topic <%= tag.colorClass %>"><%= tag.label %></span>
+                                <a class="tag-link"
+                                    href="/?tag=<%= tag.slug %><%= activeMood ? '&mood=' + activeMood.slug : '' %>"
+                                    title="Show posts tagged <%= tag.label %>"
+                                    aria-label="Show posts tagged <%= tag.label %>" <%- activeTag && activeTag.slug === tag.slug ? 'aria-current="page"' : '' %>>
+                                    <span class="tag tag--topic <%= tag.colorClass %>"><%= tag.label %></span>
+                                </a>
                             <% }) %>
                         <% } %>
                     </div>
@@ -80,7 +105,5 @@
     
                 
 </section>
-
-
 
 <%- include("./partials/footer.ejs") %>

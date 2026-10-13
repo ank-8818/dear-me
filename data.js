@@ -19,18 +19,41 @@ function rowToPost(row) {
     }
 }
 
-
-export function getPosts() {
-
-    const rows = db.prepare(`${POST_SELECT} GROUP BY posts.id ORDER BY posts.created_at DESC, posts.id DESC`).all();
-    return rows.map(rowToPost);
+function escapeLike(text) {
+    return text.replace(/[\\%_]/g, "\\$&");
 }
 
-export function getPostsByMood(slug) {
-    const statement = db.prepare(
-        `${POST_SELECT} WHERE posts.mood_slug = ?  GROUP BY posts.id ORDER BY posts.created_at DESC, posts.id DESC`
-    );
-    return statement.all(slug).map(rowToPost);
+
+export function getPosts({moodSlug = null, tagSlug = null, q=null} = {}) {
+    const conditions = [];
+    const params = [];
+
+    if (moodSlug) {
+        conditions.push("posts.mood_slug = ?");
+        params.push(moodSlug);
+    }
+
+    if (tagSlug) {
+        conditions.push("posts.id IN (SELECT post_id FROM post_tags WHERE tag_slug =?)");
+        conditions.push("posts.content_warning IS NULL");
+        params.push(tagSlug);
+    }
+
+    if (q) {
+        const pattern = `%${escapeLike(q)}%`;
+        conditions.push(
+            "(posts.title LIKE ? ESCAPE '\\' OR (posts.content_warning IS NULL AND posts.body LIKE ? ESCAPE '\\'))"
+        );
+        params.push(pattern, pattern);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    const rows = db.prepare(
+        `${POST_SELECT} ${where} GROUP BY posts.id ORDER BY posts.created_at DESC, posts.id DESC`
+    ).all(...params);
+
+    return rows.map(rowToPost);
 }
 
 export function addPost({title, body, moodSlug, timeTagSlug = null, contentWarning = null, tagSlugs = []}) {

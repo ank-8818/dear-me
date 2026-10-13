@@ -25,9 +25,9 @@
         <img src="/images/logo-and-dividers/blog-logo.svg" alt="Dear Me," class="logo">
         
         <nav class="site-nav">
-            <a href="/">Home</a>
-            <a href="/compose">Write</a>
-            <a href="#">About</a>
+            <a href="/" <%- currentPath === "/" ? 'aria-current="page"' : "" %>>Home</a>
+            <a href="/compose" <%- currentPath === "/compose" ? 'aria-current="page"' : "" %>>Write</a>
+            <a href="/about" <%- currentPath === "/about" ? 'aria-current="page"' : "" %>>About</a>
         </nav>
     </header>
 

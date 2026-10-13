@@ -354,7 +354,7 @@ img {
 }
 
 
-.post-page, .compose {
+.post-page, .compose, .about-page {
   max-width: 680px;
   margin: 40px auto
 }
@@ -824,4 +824,95 @@ img {
 .post-page__warning .post-page__tags {
   margin: 0;
   padding: 0 18px 18px;
+}
+
+.tag-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.tag-link:hover .tag-topic{
+  background: var(--card);
+  box-shadow: 0 0 0 1px var(--cat, var(--border));
+}
+
+.tag-link[aria-current="page"] .tag--topic {
+    box-shadow: 0 0 0 2px var(--cat, var(--border));
+}
+
+
+/* -------------------- Search --------------------- */
+.search {
+  display: flex;
+  gap: 8px;
+  max-width: 520px;
+  margin: 0 auto 20px;
+}
+
+.search input[type="search"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font: inherit;
+  color: var(--text);
+}
+
+.search input[type="search"]:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--lilac-pale);
+}
+
+
+/*  ---------------- About page ----------------  */
+.about-page h1 {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  margin: 0 0 16px;
+}
+
+.about-page h2 {
+  font-size: 1.35rem;
+  margin: 40px 0 12px;
+}
+
+.about-restrict ul, .about-guide ol {
+  padding-left: 1.25rem;
+  margin:  0 0 16px;
+}
+
+.about-page li {
+  margin-bottom: 8px;
+}
+
+.about-note, .about-intro {
+  margin: 40px 0;
+  padding: 18px 20px;
+  background: var(--card);
+  border-radius: 12px;
+}
+
+.about-note {
+  border: 1.5px solid var(--border);
+}
+
+.about-note h2 {
+  margin-top: 0;
+}
+
+.about-note {
+  border-left: 4px solid var(--blue);
+}
+
+.about-note p {
+  margin: 0 0 8px;
+}
+
+.about-cta p {
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--text-soft);
 }
