@@ -1,3 +1,15 @@
+const homePageQuotes = [
+  "The path ahead might be harder than it seems. But it is yours.",
+  "You don't have to stay on a path just because you've already started walking it. You're allowed to change direction.",
+  "It's okay to be scared. You don't have to figure everything out today.",
+  "You've made it through difficult things before. Give yourself a little credit for that.",
+  "You don't have to be fearless to try. And when it all gets a little too much, you can put your thoughts down here.",
+  "Not every thought needs a conclusion. Some just need somewhere to go.",
+  "You're allowed to have a day that doesn't turn into a lesson.",
+  "It's okay if all you did today was get through today.",
+  "You don't have to make sense of everything before you write it down."
+];
+
 const titles = [
   "dear me, today i was feeling...",
   "so, what's the story?",
@@ -53,6 +65,18 @@ const bodyErrors = [
   "a post with no body is just a title wearing a trench coat."
 ];
 
+const longCWErrors = [
+  "60 chars max. it's a warning, not a therapy session.",
+  "the CW box is tiny. be brief, be kind.",
+  "shorten the warning. the post can do the long part."
+];
+
+const tooManyTagsErrors = [
+  "three tags max. pick your favorites.",
+  "the tag box is a trio, not a playlist.",
+  "three is the magic number here. choose wisely."
+];
+
 
 
 function pick(array) {
@@ -77,4 +101,16 @@ export function getEmptyTitleError() {
 
 export function getBodyError() {
   return pick(bodyErrors);
+}
+
+export function getLongCWError() {
+  return pick(longCWErrors);
+}
+
+export function getHomePageQuote() {
+  return pick(homePageQuotes);
+}
+
+export function getTooManyTagsError() {
+  return pick(tooManyTagsErrors);
 }

@@ -10,12 +10,22 @@
         <div>
             <h1><%= post.title %></h1>
             <time class="post-card__date"><%= post.createdAt.toLocaleDateString("en-GB", {dateStyle: "medium"}) %></time>
+            <% if (post.timeTag) { %>
+                <span class="tag <%= post.timeTag.colorClass %>"><%= post.timeTag.label %></span>
+            <% } %>
         </div>
     </div>
 
-    
-
-    <p class="post-page__body"><%= post.body %></p>
+    <% if (post.contentWarning) {%>
+        <details class="post-page__warning">
+            <summary>Content warning: <%= post.contentWarning %>. <span class="post-page__show">Show post</span></summary>
+            <p class="post-page__body"><%= post.body %></p>
+            <%- include("./partials/topic-tags.ejs", { tags: post.tags }) %>
+        </details>
+    <% } else { %>
+        <p class="post-page__body"><%= post.body %></p>
+        <%- include("./partials/topic-tags.ejs", { tags: post.tags }) %>
+    <% } %>
 
     <a class="btn" href="/">Back to all thoughts</a>
         

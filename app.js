@@ -1,7 +1,9 @@
 import express from "express";
 import { moods, getMoodBySlug } from "./moods.js";
 import { getPostById, getPostsByMood, getPosts, addPost } from "./data.js";
-import { getBodyError, getEmptyTitleError, getExcessTitleError, placeholderText } from "./prompts.js";
+import { getBodyError, getEmptyTitleError, getExcessTitleError, getLongCWError, getTooManyTagsError, getHomePageQuote, placeholderText } from "./prompts.js";
+import { timeSlots, getTimeTagBySlug } from "./timeTags.js";
+import { tagCategories, getTagBySlug } from "./tags.js";
 import "./db.js";
 
 const app = express();
@@ -13,10 +15,12 @@ app.use(express.urlencoded({extended: true}));
 
 
 // Helper function
-function withMood(post) {
+function withDetails(post) {
     return {
         ...post,
-        mood: getMoodBySlug(post.moodSlug)
+        mood: getMoodBySlug(post.moodSlug),
+        timeTag: getTimeTagBySlug(post.timeTagSlug),
+        tags: post.tagSlugs.map(getTagBySlug).filter(Boolean)
     };
 }
 
@@ -26,7 +30,7 @@ app.get("/", (req, res) => {
     const activeMood = getMoodBySlug(req.query.mood) || null;
 
     const posts = activeMood ? getPostsByMood(activeMood.slug) : getPosts();
-    res.render("home", { posts: posts.map(withMood), moods, activeMood });
+    res.render("home", { posts: posts.map(withDetails), moods, activeMood, quote: getHomePageQuote()});
     
 });
 
@@ -37,55 +41,88 @@ app.get("/posts/:id", (req, res) => {
     if (!post){
         return res.status(404).send("Post not found")
     }
-    res.render("post", { post: withMood(post) });   
+    res.render("post", { post: withDetails(post) });   
 });
 
 
 // Compose page
-app.get("/compose", (req, res) => {
-    const placeholders = placeholderText();
-    res.render("compose", {
-        moods,
-        placeholders,
+
+function renderCompose(res, status, values) {
+    res.status(status).render("compose", {
+        moods, timeSlots, tagCategories,
+        placeholders: placeholderText(),
         title: "",
-        body: "",
-        moodSlug:"",
-        error: null
-    });
+        body:"",
+        moodSlug: "",
+        timeTagSlug: "",
+        tagSlugs: [],
+        contentWarning: "",
+        error: null,
+        ...values
+    })
+}
+
+app.get("/compose", (req, res) => {
+    renderCompose(res, 200);
 });
 
 app.post("/compose", (req, res) => {
-    const { title, body, moodSlug } = req.body;
+    const { title = "", body = "", moodSlug, timeTagSlug = "", contentWarning = ""} = req.body;
+    const entered = { title, body, moodSlug, timeTagSlug, contentWarning };
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
-    const placeholders = placeholderText();
+    const cleanWarning = contentWarning.trim();
+    
+    const rawTags = (Array.isArray(req.body.tagSlugs) ? req.body.tagSlugs : req.body.tagSlugs ? [req.body.tagSlugs] : []);
 
+    const validTags = [...new Set(
+        rawTags.filter (slug => typeof slug === "string")
+    )].filter(slug => getTagBySlug(slug));
+
+    if (validTags.length > 3) {
+        return renderCompose(res, 400, {
+            error:getTooManyTagsError(),
+            title, body, moodSlug, timeTagSlug, contentWarning,
+            tagSlugs: validTags
+        });
+    }
+    
+    //  Errors for the compose form
     if (!cleanTitle) {
-        return res.status(400).render("compose", {
-            moods, placeholders,
-            error: getEmptyTitleError(),
-            title, body, moodSlug
+        return renderCompose(res, 400, {error: getEmptyTitleError(), 
+            tagSlugs: validTags,
+            ...entered  
         });
     }
 
     if (cleanTitle.length > 80) {
-        return res.status(400).render("compose", {
-            moods, placeholders,
-            error: getExcessTitleError(),
-            title, body, moodSlug
+        return renderCompose(res, 400, {error: getExcessTitleError(),
+            tagSlugs: validTags,
+            ...entered
         });
     }
 
     if (!cleanBody) {
-        return res.status(400).render("compose", {
-            moods, placeholders,
-            error: getBodyError(),
-            title, body, moodSlug
+        return renderCompose(res, 400, {error: getBodyError(),
+            tagSlugs: validTags,
+            ...entered
         });
     }
 
-    const validSlug = moodSlug && getMoodBySlug(moodSlug) ? moodSlug : null;
-    addPost( {title: cleanTitle, body: cleanBody, moodSlug: validSlug});
+    if (cleanWarning.length > 60) {
+    return renderCompose(res, 400, {error: getLongCWError(),
+            tagSlugs: validTags,
+            ...entered
+        });
+    }
+
+    //  Validation
+    const validMood = moodSlug && getMoodBySlug(moodSlug) ? moodSlug : null;
+    const validTime = timeTagSlug && getTimeTagBySlug(timeTagSlug) ? timeTagSlug : null;
+
+    
+    
+    addPost( {title: cleanTitle, body: cleanBody, moodSlug: validMood, timeTagSlug: validTime, tagSlugs: validTags, contentWarning: cleanWarning || null});
     res.redirect("/");
 });
 

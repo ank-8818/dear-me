@@ -1,0 +1,7 @@
+<% if (tags.length > 0) { %>
+    <div class="post-page__tags">
+        <% tags.forEach(tag => { %>
+            <span class="tag tag--topic <%= tag.colorClass %>"><%= tag.label %></span>
+        <% }) %>
+    </div>
+<% } %>

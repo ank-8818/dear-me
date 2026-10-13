@@ -39,11 +39,63 @@
 
         </fieldset>
 
+        <div class="field">
+            <label for="timeTag">Time of the day</label>
+            <select id="timeTag" name="timeTagSlug">
+                <option value="" <%= timeTagSlug === "" ? "selected" : "" %>>No time tag</option>
+
+                <% timeSlots.forEach(slot => { %>
+                    <optgroup label="<%= slot.name %>">
+                        <% slot.tags.forEach(tag => { %>
+                            <option value="<%= tag.slug %>" <%= timeTagSlug === tag.slug ? "selected" : "" %>>
+                                <%= tag.label %>
+                            </option>
+                        <% }) %>
+                    </optgroup>
+                <% }) %>
+            </select>
+
+            <!--    for suggestions based on time of the day    -->
+            <p class="field-hint" id="time-suggestion" hidden>
+                Suggestion for this moment: <strong id="suggested-label"></strong>
+                <button type="button" class="btn btn--small" id="use-suggestion">Use it</button>
+            </p>
+        </div>
+
+
+        <!--    Choosing tags   -->
+        <fieldset class="tag-picker">
+            <legend>Add up to 3 tags <span id="tag-count" aria-live="polite">(0 of 3 chosen)</span></legend>
+            <% tagCategories.forEach(category => { %>
+                <details class="tag-category <%= category.colorClass %>">
+                    <summary><%= category.name %></summary>
+                    <p class="field-hint"><%= category.description %></p>
+                    <div class="tag-options">
+
+                        <% category.tags.forEach(tag => { %>
+                            <label class="tag-option">
+                                <input type="checkbox" name="tagSlugs" value="<%= tag.slug %>" <%= tagSlugs.includes(tag.slug) ? "checked" : "" %>>
+                                <span class="tag tag--topic"><%= tag.label %></span>
+                            </label>
+                        <% }) %>
+                    </div>
+                </details>
+            <% }) %>
+        </fieldset>
+
+
+        <div class="field">
+            <label for="contentWarning">Content Warning</label>
+            <input type="text" id="contentWarning" name="contentWarning" maxlength="60" value="<%= contentWarning %>" placeholder="e.g. what you'd gently warn a friend about">
+             <p class="field-hint">Shown before your post, so readers can choose. Please keep the sensitive details out of the title.</p>
+        </div>
+
 
         <button type="submit" class="btn btn--solid"><%= placeholders.button %></button>
     </form>
 </section>
 
-
+<script src="/js/time-suggest.js"></script>
+<script src="/js/tag-limit.js"></script>
 
 <%- include("./partials/footer.ejs") %>
