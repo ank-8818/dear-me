@@ -1,0 +1,40 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="journal">
+    <div class="journal__head">
+        <% if (currentUser.avatar) { %>
+            <img class="journal__avatar" src="<%= currentUser.avatar.image %>" alt="">
+        <% } %>
+
+        <div>
+            <h1>My journal</h1>
+            <p class="journal__name"><%= currentUser.pseudonym %></p>
+        </div>
+    </div>
+
+    <form class="journal__status" action="/me/status" method="POST">
+        <div class="field">
+            <label for="status">How are you, right now?</label>
+            <div class="journal__status-row">
+                <input id="status" name="status" type="text" maxlength="100" value="<%= currentUser.status || "" %>" placeholder="a few words, just for you">
+                <button type="submit" class="btn">Save</button>
+            </div>
+            <p class="field-hint">Only you can see this. Save it empty to clear it.</p>
+        </div>
+    </form>
+
+    <% if (posts.length === 0) { %>
+        <p>Nothing here yet. Whenever you're ready, this page is yours.</p>
+        <a href="/compose" class="btn btn--solid">Write</a>
+    <% } else { %>
+        <div class="feed">
+            <% posts.forEach(post => { %>
+                <%- include("./partials/post-card.ejs", { post, showActions: true }) %>
+            <% }) %>
+        </div>
+    <% } %>
+</section>
+
+
+
+<%- include("./partials/footer.ejs") %>

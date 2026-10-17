@@ -9,12 +9,16 @@
 
         <div>
             <h1><%= post.title %></h1>
-            <time class="post-card__date"><%= post.createdAt.toLocaleDateString("en-GB", {dateStyle: "medium"}) %></time>
+            <%- include("./partials/byline.ejs", { post }) %>
             <% if (post.timeTag) { %>
                 <span class="tag <%= post.timeTag.colorClass %>"><%= post.timeTag.label %></span>
             <% } %>
         </div>
     </div>
+
+    <% if (post.isPrivate) { %>
+        <p class="post-page__private" role="note">Only you can see this post.</p>
+    <% } %>
 
     <% if (post.contentWarning) {%>
         <details class="post-page__warning">
@@ -25,6 +29,20 @@
     <% } else { %>
         <p class="post-page__body"><%= post.body %></p>
         <%- include("./partials/topic-tags.ejs", { tags: post.tags }) %>
+    <% } %>
+
+    <% if (currentUser && currentUser.id === post.authorId) { %>
+        <div class="post-page__actions">
+            <a class="btn" href="/posts/<%= post.id %>/edit">Edit</a>
+
+            <details class="delete-box">
+                <summary>Delete</summary>
+                <p>This can't be undone. Delete this post?</p>
+                <form action="/posts/<%= post.id %>/delete" method="POST">
+                    <button type="submit" class="btn btn--danger">Yes, delete it</button>
+                </form>
+            </details>
+        </div>
     <% } %>
 
     <a class="btn" href="/">Back to all thoughts</a>

@@ -1,0 +1,39 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="compose">
+    <% if (error) { %>
+        <p class="form-error" role="alert"><%= error %></p>
+    <% } %>
+
+    <div class="login-intro">
+        <h1>Welcome back, <%= welcomeName %></h1>
+        <p>Your thoughts have a home here.</p>
+    </div>
+
+    <form action="/login" method="POST">
+        <div class="field">
+            <label for="pseudonym">Pseudonym</label>
+                <input id="pseudonym" name="pseudonym" type="text" minlength="3" maxlength="20" required value="<%= pseudonym %>" autocomplete="username">
+        </div>
+
+        <div class="field">
+            <label for="password">Password</label>
+                <input id="password" name="password" type="password" minlength="8" maxlength="72" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn--solid">Log in</button>
+
+    </form>
+    <p class="form-cross-link">
+        Forgot your password? <a href="/forgot-password">Reset it here</a>
+    </p>
+
+    <p class="form-cross-link">
+        New here? <a href="/register">Register</a>
+    </p>
+</section>
+
+
+<script src="/js/password-toggle.js"></script>
+
+<%- include("./partials/footer.ejs") %>

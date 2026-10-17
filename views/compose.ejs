@@ -6,7 +6,7 @@
         <p class="form-error" role="alert"><%= error %></p>
     <% } %>
 
-    <form action="/compose" method="POST">
+    <form action="<%= formAction %>" method="POST">
     
         <div class="field">
             <label for="title">
@@ -16,7 +16,7 @@
 
         <div class="field">
             <label for="body">
-                <textarea id="body" name="body" required placeholder="<%= placeholders.body %>" aria-label="Your thoughts"><%= body %></textarea>
+                <textarea id="body" name="body" required placeholder="<%= placeholders.body %>" aria-label="Your thoughts" maxlength="10000"><%= body %></textarea>
             </label>
         </div>
 
@@ -90,12 +90,27 @@
              <p class="field-hint">Shown before your post, so readers can choose. Please keep the sensitive details out of the title.</p>
         </div>
 
+        <fieldset class="visibility-picker">
+            <legend>Who can read this?</legend>
 
-        <button type="submit" class="btn btn--solid"><%= placeholders.button %></button>
+            <label class="visibility-option">
+                <input type="radio" name="visibility" value="private" <%= visibility === "private" ? "checked" : "" %>>
+                <span><strong>Only me</strong> It stays in your journal. No one else can see it.</span>
+            </label>
+
+            <label class="visibility-option">
+                <input type="radio" name="visibility" value="public" <%= visibility === "public" ? "checked" : "" %>>
+                <span><strong>Share with others</strong> It appears on the homepage with your pseudonym.</span>
+            </label>
+        </fieldset>
+
+        <button type="submit" class="btn btn--solid"><%= submitLabel %></button>
     </form>
 </section>
 
 <script src="/js/time-suggest.js"></script>
 <script src="/js/tag-limit.js"></script>
+
+<script src="/js/password-toggle.js"></script>
 
 <%- include("./partials/footer.ejs") %>

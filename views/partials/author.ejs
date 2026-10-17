@@ -1,0 +1,6 @@
+<span class="author">
+    <% if (locals.showAvatar !== false && author.avatar) { %>
+        <img class="author__avatar" src="<%= author.avatar.image %>" alt="">
+    <% } %>
+    <span class="author__name"><%= author.pseudonym %></span>
+</span>

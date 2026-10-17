@@ -1,0 +1,49 @@
+<% const filterMood = locals.activeMood || null; %>
+<% const filterTag = locals.activeTag || null; %>
+<% const showTopics = !post.contentWarning && post.tags.length > 0; %>
+
+<article class="post-card <%= post.mood ? post.mood.colorClass : "" %> <%= post.contentWarning ? "post-card--warned" : "" %>">
+    <div class="post-card__head">
+
+        <% if (post.mood) { %>
+            <img class="post-card__sticker" src="<%= post.mood.image %>" alt="<%= post.mood.label %>">
+        <% } %>
+
+        <div>
+            <h2 class="post-card__title"><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
+            <%- include("./byline.ejs", { post }) %>
+        </div>
+    </div>
+
+    <% if (post.contentWarning) { %>
+        <p class="post-card__warning">Content warning: <%= post.contentWarning %></p>
+    <% } else { %>
+        <p class="post-card__preview"><%= post.body %></p>
+    <% } %>
+
+    <div class="post-card__foot">
+        <% if (post.timeTag || showTopics) { %>
+            <div class="post-card__tags">
+                <% if (post.timeTag) { %>
+                    <span class="tag <%= post.timeTag.colorClass %>"><%= post.timeTag.label %></span>
+                <% } %>
+
+                <% if (showTopics) { %>
+                    <% post.tags.forEach(tag => { %>
+                        <a class="tag-link"
+                           href="/?tag=<%= tag.slug %><%= filterMood ? '&mood=' + filterMood.slug : '' %>"
+                           title="Show posts tagged <%= tag.label %>"
+                           aria-label="Show posts tagged <%= tag.label %>" <%- filterTag && filterTag.slug === tag.slug ? 'aria-current="page"' : '' %>>
+                            <span class="tag tag--topic <%= tag.colorClass %>"><%= tag.label %></span>
+                        </a>
+                    <% }) %>
+                <% } %>
+            </div>
+        <% } %>
+
+        <% if (locals.showActions) { %>
+            <a class="post-card__edit" href="/posts/<%= post.id %>/edit">Edit</a>
+        <% } %>
+        <a class="btn" href="/posts/<%= post.id %>" aria-label="Read more: <%= post.title %>">Read more</a>
+    </div>
+</article>

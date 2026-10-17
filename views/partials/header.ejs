@@ -6,6 +6,11 @@
     <title>Dear Me</title>
 
     <!--Meta tags - TODO-->
+    <meta name="description" content="A quiet place to put your thoughts into words.">
+    <meta name="theme-color" content="#F5EBDD">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="/images/assets/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/images/assets/favicon.png">
 
     <!--Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +19,7 @@
 
 
     <!--CSS Stylesheet-->
-    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/styles-final.css" rel="stylesheet">
 
 
 </head>
@@ -22,12 +27,32 @@
     
     <!--header-->
     <header class="site-header container">
-        <img src="/images/logo-and-dividers/blog-logo.svg" alt="Dear Me," class="logo">
+        <a href="/"><img src="/images/assets/blog-logo.svg" alt="Dear Me," class="logo"></a>
         
         <nav class="site-nav">
             <a href="/" <%- currentPath === "/" ? 'aria-current="page"' : "" %>>Home</a>
-            <a href="/compose" <%- currentPath === "/compose" ? 'aria-current="page"' : "" %>>Write</a>
             <a href="/about" <%- currentPath === "/about" ? 'aria-current="page"' : "" %>>About</a>
+            
+            <% if (currentUser) { %>
+                <a href="/compose" <%- currentPath === "/compose" ? 'aria-current="page"' : "" %>>Write</a>
+                
+
+                <div class="nav-account">
+                    <div class="nav-user">
+                        <% if(currentUser.avatar) { %>
+                            <a href="/me" aria-label="My profile"><img src="<%= currentUser.avatar.image %>" alt="" class="nav-avatar"></a>
+                        <% } %>
+                        <span class="nav-pseudonym"><%= currentUser.pseudonym %></span>
+                    </div>
+                </div>
+
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="nav-button">Log out</button>
+                </form>
+            <% } else { %>
+                <a href="/login" <%- currentPath === "/login" ? 'aria-current="page"' : "" %>>Log in</a>
+                <a href="/register" <%- currentPath === "/register" ? 'aria-current="page"' : "" %>>Register</a>
+            <% } %>
         </nav>
     </header>
 

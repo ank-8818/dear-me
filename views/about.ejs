@@ -1,5 +1,4 @@
 <%- include("./partials/header.ejs") %>
-
 <article class="about-page">
     <section class="about-intro">
         <h1>Dear me,</h1>
@@ -10,7 +9,7 @@
         <p>Afterall, who else can I ask to do this with me?</p>
     </section>
 
-    <img class="divider" src="/images/logo-and-dividers/divider.svg" alt="">
+    <img class="divider" src="/images/assets/divider.svg" alt="">
     
 
     <section class="about-guide">
@@ -44,9 +43,7 @@
 
             <li>
                 <strong>Let it be.</strong>
-                When you're ready, publish your writing. It doesn't have
-                to be perfect or have everything figured out. Sometimes,
-                getting the words out is enough.
+                When you're ready, save it for yourself or share it with others. It doesn't have to be perfect or have everything figured out. Sometimes, getting the words out is enough.
             </li>
         </ol>
     </section>
@@ -61,12 +58,45 @@
 
         <ul>
             <li>Be kind to yourself. You are allowed to be a work in progress.</li>
-            <li>Share only what you feel comfortable making public. Everything you publish here is public, and for now it can’t be edited or deleted.</li>
+            <li>Share only what you feel comfortable making public. Posts you share can be read by anyone, even without an account. Posts marked "Only me" stay in your journal.</li>
             <li>Respect other people's privacy when writing about them.</li>
+            <li>Use a content warning if your writing touches something heavy.</li>
             <li>Let this be a space for reflection, not for hurting or humiliating others.</li>
-            <li>Your thoughts today do not have to define you forever.</li>
+            <li>You can edit or delete anything you’ve written, whenever you like. Your thoughts today do not have to define you forever.</li>
         </ul>
+
+        <p>
+            When you write, you can also add a sticker for how it feels, a time-of-day tag (a mood, not a clock), up to three topic tags, and a content warning, which tucks your words away until a reader chooses to open them. You can keep a post just for yourself or share it. You'll need an account to write, but anyone can read the posts that are shared. Your journal keeps everything you've written, and has a small space to note how you're feeling. Only you can see it.
+        </p>
+    </section>
+
+    <img class="divider" src="/images/assets/divider.svg" alt="">
+
+    <section class="about-privacy">
+        <section class="about-privacy">
+            <h2>Your privacy, honestly</h2>
+
+            <p>Because people write vulnerable things here, I'd rather tell you exactly how this place works.</p>
+
+            <ul>
+                <li>Posts you choose to share can be read by anyone, with or without an account. Your pseudonym appears on them, along with the date, but never the time.</li>
+                <li>Posts marked "Only me" can't be opened by anyone else. They don't appear on the home page, in search, or anywhere else.</li>
+                <li>There's no email. The site keeps your pseudonym, your picture choice, your journal status, scrambled versions of your password and recovery code, and what you write.</li>
+                <li>"Scrambled" means nobody can read your password or recovery code, including me.</li>
+                <li>After you sign up, you'll see a recovery code once. It's the only way back in if you forget your password. If you lose both, the account can't be recovered.</li>
+                <li>You can edit or delete your own posts, and switch a post between "Only me" and shared whenever you like. A deleted post is removed from the site. If a post was shared for a while, someone may already have read it.</li>
+                <li>The site uses one small cookie to keep you logged in, and nothing to track you.</li>
+            </ul>
+
+            <h3>What I can't promise</h3>
+
+            <ul>
+                <li>I run this site, so I can technically see everything stored in it, including posts marked "Only me". They're hidden from other people, but they aren't encrypted.</li>
+                <li>The fonts load from Google Fonts, so Google can tell that a page was opened.</li>
+                <li>There's no report button and no button to delete your account yet. If you need something removed, write to <a href="mailto:ankitadas8818@gmail.com">ankitadas8818@gmail.com</a> and I'll do it by hand. The guidelines above are a request, not a guarantee, and I'll add better tools as the site grows.</li>
+            </ul>
         </section>
+    </section>
 
     <aside class="about-note">
         <h2>If you're struggling</h2>
@@ -89,9 +119,15 @@
     </aside>
 
     <div class="about-cta">
-        <p>Whenever you're ready, there's a little space here for you.</p>
+        <p class="quote">Whenever you're ready, there's a little space here for you.</p>
 
-        <a href="/compose" class="btn btn--solid">Write</a>
+        <% if (currentUser) { %>
+            <a href="/compose" class="btn btn--solid">Write</a>
+        <% } else { %>
+            <a href="/register" class="btn btn--solid">Create an account to write</a>
+            <p class="form-cross-link">Already have one? <a href="/login">Log in</a></p>
+        <% } %>
+
     </div>
 </article>
 

@@ -1,2 +1,5 @@
 node_modules
-dear-me.db
+.env
+*.db
+*.db-wal
+*.db-shm

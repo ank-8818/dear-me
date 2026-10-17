@@ -5,7 +5,7 @@
   <p><%= quote %></p>
 </section>
 
-<img class="divider" src="/images/logo-and-dividers/divider.svg" alt="">
+<img class="divider" src="/images/assets/divider.svg" alt="">
 
 <form class="search" action="/" method="GET" role="search">
     <input type="search" name="q" value="<%= q %>" maxlength="100" aria-label="Search posts" placeholder="Search thoughts">
@@ -45,7 +45,7 @@
 
     <% if (posts.length === 0) { %>
         <div class="feed-empty">
-            <img src="/images/logo-and-dividers/empty-carton.png" alt="">
+            <img src="/images/assets/empty-carton.png" alt="">
             <% if (activeMood || activeTag || q) { %>
                 <p>Nothing matches that yet. <a href="/">Show everything</a></p>
             <% } else { %>
@@ -55,55 +55,19 @@
     <% } %>
 
     <% posts.forEach(post => { %>
-        <article class="post-card <%= (post.mood) ? post.mood.colorClass : "" %> <%= (post.contentWarning) ? "post-card--warned" : "" %>">
-            <div class="post-card__head">
-
-                <% if (post.mood) { %>
-                    <img class="post-card__sticker" src="<%= post.mood.image %>" alt="<%= post.mood.label %>">
-                <% } %>
-
-                <div>                    
-                    <h2 class="post-card__title"><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
-                    <time class="post-card__date"><%= post.createdAt.toLocaleDateString("en-GB", {dateStyle: "medium"}) %></time>
-                </div>
-            </div>
-            
-            
-            <% if (post.contentWarning) {%>
-                <p class="post-card__warning">Content warning: <%= post.contentWarning %></p>
-            <% } else { %>
-                <p class="post-card__preview"><%= post.body%></p>
-            <% } %>
-
-            <% const showTopics = !post.contentWarning && post.tags.length > 0; %>
-
-            <div class="post-card__foot">
-                <% if (post.timeTag || showTopics) { %>
-                    <div class="post-card__tags">
-                        <% if (post.timeTag) { %>
-                            <span class="tag <%= post.timeTag.colorClass %>"><%= post.timeTag.label %></span>
-                        <% } %>
-
-                        <% if (showTopics) { %>
-                            <% post.tags.forEach(tag => { %>
-                                <a class="tag-link"
-                                    href="/?tag=<%= tag.slug %><%= activeMood ? '&mood=' + activeMood.slug : '' %>"
-                                    title="Show posts tagged <%= tag.label %>"
-                                    aria-label="Show posts tagged <%= tag.label %>" <%- activeTag && activeTag.slug === tag.slug ? 'aria-current="page"' : '' %>>
-                                    <span class="tag tag--topic <%= tag.colorClass %>"><%= tag.label %></span>
-                                </a>
-                            <% }) %>
-                        <% } %>
-                    </div>
-                <% } %>
-                <a class="btn" href="/posts/<%= post.id %>">Read more</a>
-            </div>
-            
-        </article>
+        <%- include("./partials/post-card.ejs", { post }) %>
     <% }) %>
+
+    <% if (nextPageUrl) {%>
+        <div class="feed__more">
+            <a class="btn" href="<%= nextPageUrl %>">More thoughts</a>
+        </div>
+    <% } %>
 
     
                 
 </section>
+
+<script src="/js/load-more.js" defer></script>
 
 <%- include("./partials/footer.ejs") %>

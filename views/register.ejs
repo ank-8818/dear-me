@@ -1,0 +1,54 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="compose">
+    <% if (error) { %>
+        <p class="form-error" role="alert"><%= error %></p>
+    <% } %>
+
+    <div class="register-intro">
+        <h1>Register as a new user</h1>
+        <p>Choose a name that isn't your real name to help keep your identity private. We don't collect email addresses, you will get a recovery code when you register. It will be required if you forget your password. Please keep it somewhere safe!</p>
+    </div>
+
+    <form action="/register" method="POST">
+        <div class="field">
+            <label for="pseudonym">Pseudonym</label>
+                <input id="pseudonym" name="pseudonym" type="text" minlength="3" maxlength="20" required value="<%= pseudonym %>" autocomplete="username">
+        </div>
+
+        <div class="field">
+            <label for="password">Password</label>
+                <input id="password" name="password" type="password" minlength="8" maxlength="72" required autocomplete="new-password">
+        </div>
+
+        <div class="field">
+            <label for="confirmPassword">Confirm password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" minlength="8" required autocomplete="new-password">
+        </div>
+
+        <fieldset class="avatar-picker">
+            <legend>Choose your picture</legend>
+
+            <div class="avatar-grid">
+
+                <% avatars.forEach(avatar => { %>
+                    <label class="avatar-option" title="<%= avatar.label %>">
+                        <input type="radio" name="avatarSlug" value="<%= avatar.slug %>" <%= avatarSlug === avatar.slug ? "checked" : "" %> required/>
+                        <img src="<%= avatar.image %>" alt="<%= avatar.label %>" />
+                    </label>
+                <% }) %>
+            </div>
+
+        </fieldset>
+
+        <button type="submit" class="btn btn--solid">Register</button>
+
+    </form>
+    <p class="form-cross-link">
+        Already have an account? <a href="/login">Log in</a>
+    </p>
+</section>
+
+<script src="/js/password-toggle.js"></script>
+
+<%- include("./partials/footer.ejs") %>
