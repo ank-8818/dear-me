@@ -7,7 +7,7 @@
     "start": "node app.js",
     "dev": "node --watch --env-file=.env app.js"
   },
-  "engines": { "node": ">=22.13" },
+  "engines": { "node": "22.x" },
   "keywords": [],
   "author": "",
   "license": "ISC",
