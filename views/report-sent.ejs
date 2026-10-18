@@ -1,0 +1,16 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="error-page">
+    <h1>Thank you</h1>
+    <p>Your report has been sent. It's read by a person, and the writer won't know it came from you.</p>
+
+    <% if (showHelp) { %>
+        <p>
+            I can't contact the writer, because this site holds no email addresses. If you can reach them, a kind message may mean a lot. In India, you can call <a href="tel:14416">14416</a> (Tele-MANAS) for free, any time. For other countries, see <a href="https://findahelpline.com/" target="_blank" rel="noopener noreferrer">Find A Helpline</a>.
+        </p>
+    <% } %>
+
+    <a href="/" class="btn btn--solid">Back to home</a>
+</section>
+
+<%- include("./partials/footer.ejs") %>

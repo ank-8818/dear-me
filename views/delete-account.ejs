@@ -1,0 +1,28 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="compose">
+    <% if (error) { %>
+        <p class="form-error" role="alert"><%= error %></p>
+    <% } %>
+
+    <div class="register-intro">
+        <h1>Delete your account</h1>
+        <p>This removes your account and everything you've written here, including posts marked "Only me" and posts you've shared.  It can't be undone, and not even your recovery code can bring it back.</p>
+    </div>
+
+    <form action="/me/delete" method="POST">
+        <div class="field">
+            <label for="password">Your password</label>
+            <input id="password" name="password" type="password" maxlength="72" required autocomplete="current-password">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn--danger">Delete my account</button>
+            <a href="/me" class="btn">Keep my account</a>
+        </div>
+    </form>
+</section>
+
+<script src="/js/password-toggle.js"></script>
+
+<%- include("./partials/footer.ejs") %>

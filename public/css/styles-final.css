@@ -133,9 +133,6 @@ img {
 .intro p {
   margin: 0 auto;
   color: var(--text-soft);
-}
-
-.intro p {
   max-width: 52ch;
 }
 
@@ -407,16 +404,16 @@ img {
 
 .post-card__foot {
   margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px
 }
 
 .post-card__tags {
-  margin-bottom: 16px;
+  flex-basis: 100%;
 }
 
-/*  short cards hide button so no gap under the tags*/
-.post-card:not(.is-truncated):not(.post-card--warned) .post-card__tags {
-  margin-bottom: 0;
-}
 
 .post-card__warning {
   margin: 0 0 16px;
@@ -429,7 +426,6 @@ img {
 .post-card__edit {
   font-weight: 700;
   color: var(--blue);
-  margin: 20px 30px 0 0;
 }
 
 .badge-private {
@@ -1143,7 +1139,7 @@ img {
 
 .error-page img {
   margin: 0 auto 16px;
-  width: 140px;
+  width: 200px;
 }
 
 
@@ -1187,7 +1183,62 @@ img {
   margin-left: 4px;
 }
 
-/* ---------------------- 24. Responsive and reduced-motion preferences ---------------------- */
+
+/* ---------------------- 24. Form actions and account deletion ---------------------- */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.journal__danger {
+  margin-top: 48px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.journal__danger a {
+  color: var(--text-soft);
+}
+
+
+/* ---------------------- 25. Report and Admin  ---------------------- */
+.post-page__report {
+  margin: 0 0 24px;
+  font-size: 0.9rem;
+}
+
+.post-page__report a {
+  color: var(--text-soft);
+}
+
+.admin-report {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.admin-report h2 {
+  margin: 12px 0 4px;
+  font-size: 1.25rem;
+}
+
+.admin-report__meta {
+  margin: 0 0 8px;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.admin-report__body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+
+
+/* ---------------------- 26. Responsive and reduced-motion preferences ---------------------- */
 @media (max-width: 768px) {
   .site-header {
     flex-direction: column;

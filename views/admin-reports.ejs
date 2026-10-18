@@ -1,0 +1,36 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="compose">
+    <h1>Reports</h1>
+
+    <% if (reports.length === 0) { %>
+        <p>No open reports.</p>
+    <% } %>
+
+    <% reports.forEach(r => { %>
+        <article class="admin-report">
+            <p class="admin-report__meta">
+                <strong><%= r.reasonLabel %></strong> · reported by <%= r.reporter_pseudonym || "a deleted account" %>
+                · <%= new Date(r.created_at).toLocaleDateString("en-GB", { dateStyle: "medium" }) %>
+            </p>
+            <% if (r.note) { %><p>Note: <%= r.note %></p><% } %>
+
+            <h2><%= r.title %></h2>
+            <p class="admin-report__meta">by <%= r.author_pseudonym %></p>
+            <% if (r.content_warning) { %><p>Content warning: <%= r.content_warning %></p><% } %>
+            <p class="admin-report__body"><%= r.body %></p>
+
+            <div class="form-actions">
+                <a class="btn" href="/posts/<%= r.post_id %>">Open post</a>
+                <form action="/admin/reports/<%= r.id %>/dismiss" method="POST">
+                    <button type="submit" class="btn">Dismiss</button>
+                </form>
+                <form action="/admin/posts/<%= r.post_id %>/remove" method="POST">
+                    <button type="submit" class="btn btn--danger">Remove post</button>
+                </form>
+            </div>
+        </article>
+    <% }) %>
+</section>
+
+<%- include("./partials/footer.ejs") %>

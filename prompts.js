@@ -59,17 +59,6 @@ const bodies = [
   "no structure. no rules. just vibes."
 ];
 
-const buttons = [
-  "send it",
-  "dump it",
-  "let it out",
-  "press to release",
-  "seal the thought",
-  "ship it to future me",
-  "drop the brain rot",
-  "okay, i'm done"
-];
-
 const excessTitleErrors = [
   "that title's got ambition. 80 chars max, sorry.",
   "shorter! your future self won't read 80+ chars.",
@@ -166,6 +155,21 @@ const recoveryErrors = [
   "the door's not opening. give the name and code another look?"
 ];
 
+const deleteAccountErrors = [
+  "that password doesn't match, so nothing was deleted. you're still here. (for now? no, for a while.)",
+  "wrong password, nothing happened. your posts are safe. your thoughts are safe. take a breath and try again.",
+  "the password didn't match, so the door stayed shut. nothing was touched. try one more time?",
+  "that's not the password, so nothing was deleted. your little corner is exactly as you left it.",
+  "nope, that's not it. nothing was deleted, nothing was lost. your words are still waiting for you."
+];
+
+const reportReasonErrors = [
+  "pick a reason, even a rough one. it helps us understand what went wrong.",
+  "we need a little context to do anything with this. tap one of the options above?",
+  "we can't file a report with a blank 'why.' pick the closest one, even if it's not perfect.",
+  "one tap, that's all. which one fits? (there's no wrong answer here.)"
+];
+
 
 
 
@@ -177,7 +181,6 @@ export function placeholderText() {
   return {
       title: pick(titles),
       body: pick(bodies),
-      button: pick(buttons)
   }
 }
 
@@ -247,4 +250,12 @@ export function getTooManyAttemptsError() {
 
 export function getRecoveryError() {
   return pick(recoveryErrors);
+}
+
+export function getDeleteAccountError() {
+  return pick(deleteAccountErrors);
+}
+
+export function getReportReasonError() {
+  return pick(reportReasonErrors);
 }

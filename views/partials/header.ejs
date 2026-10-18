@@ -35,6 +35,11 @@
             <a href="/about" <%- currentPath === "/about" ? 'aria-current="page"' : "" %>>About</a>
             
             <% if (currentUser) { %>
+
+                <% if (currentUser.isAdmin) { %>
+                    <a href="/admin/reports" <%- currentPath === "/admin/reports" ? 'aria-current="page"' : "" %>>Reports</a>
+                <% } %>
+
                 <a href="/compose" <%- currentPath === "/compose" ? 'aria-current="page"' : "" %>>Write</a>
                 
 

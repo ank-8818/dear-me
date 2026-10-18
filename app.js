@@ -11,10 +11,11 @@ import { getPostById, getPosts, addPost, updatePost, deletePost } from "./data.j
 import { getBodyError, getEmptyTitleError, getExcessTitleError, getLongCWError, getTooManyTagsError, getHomePageQuote, getBadPseudonymError,
     getTakenPseudonymError, getMismatchPasswordError, getShortPasswordError, getLongPasswordError,
     getNoAvatarError, placeholderText, getLongBodyError, getRecoveryError,
-    getLoginError, getWelcomeName, getTooManyAttemptsError} from "./prompts.js";
+    getLoginError, getWelcomeName, getTooManyAttemptsError, getDeleteAccountError, getReportReasonError} from "./prompts.js";
 import { timeSlots, getTimeTagBySlug } from "./timeTags.js";
 import { tagCategories, getTagBySlug } from "./tags.js";
-import { getUserById, getUserByPseudonym, createUser, setCredentials, setStatus } from "./users.js";
+import { getUserById, getUserByPseudonym, createUser, setCredentials, setStatus, deleteAccount } from "./users.js";
+import { addReport, getOpenReports, dismissReport } from "./reports.js";
 import "./db.js";
 import session from "express-session";
 import { makeRecoveryCode, hashCode, checkCode } from "./recovery.js";
@@ -77,11 +78,19 @@ app.use(session({
     saveUninitialized: false,
     cookie: { httpOnly: true, secure: isProd, sameSite: "lax", maxAge: 1000 * 60 * 60 * 24 * 7}
 }));
+
+const adminName = (process.env.ADMIN_PSEUDONYM || "").toLowerCase();
+
 app.use((req, res, next) => {
     const user = req.session.userId ? getUserById(req.session.userId) : null;
     res.locals.currentUser = user
-        ? { id: user.id, pseudonym: user.pseudonym, status: user.status, avatar: getAvatarBySlug(user.avatarSlug) }
-        : null;
+        ? {
+            id: user.id,
+            pseudonym: user.pseudonym,
+            status: user.status,
+            avatar: getAvatarBySlug(user.avatarSlug),
+            isAdmin: Boolean(adminName) && user.pseudonym.toLowerCase() === adminName
+        } : null;
     next();
 });
 
@@ -218,6 +227,42 @@ function canView(post, user) {
     return !post.isPrivate || (user && user.id === post.authorId);
 }
 
+const pageNotFound = res =>
+    renderError(res, 404, "Page not found", "That address doesn't lead anywhere. Let's get you back home.");
+
+function requireAdmin(req, res, next) {
+    if (!res.locals.currentUser?.isAdmin) return pageNotFound(res);
+    next();
+}
+
+const REPORT_REASONS = [
+    { value: "unkind", label: "It's unkind or targets someone" },
+    { value: "private-info", label: "It shares someone's personal information"},
+    { value: "spam", label: "It's spam or an advert" },
+    { value: "worried", label: "I'm worried about the writer" },
+    { value: "other", label: "Somthing else" }
+];
+
+function findReportablePost(req, res) {
+    const post = getPostById(req.params.id);
+    if (!post || post.isPrivate) {
+        postNotFound(res);
+        return null;
+    }
+    if (post.authorId === res.locals.currentUser.id) {
+        res.redirect(`/posts/${post.id}`);
+        return null;
+    }
+    return post;
+}
+
+
+function renderReport(res, status, values) {
+    res.status(status).render("report", {
+        reasons: REPORT_REASONS, error: null, reason: "", note: "", ...values
+    });
+}
+
 
 const text = value =>(typeof value === "string" ? value : "");
 const cleanPseudonym = value => value.trim().replace(/\s+/g, " ");
@@ -262,6 +307,24 @@ const forgotPasswordLimiter = rateLimit({
     handler: (req, res) => renderForgotPassword(res, 429, { error: getTooManyAttemptsError(), pseudonym: "" })
 
 });
+
+const deleteAccountLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true,
+    handler:(req, res) => renderDeleteAccount(res, 429, { error: getTooManyAttemptsError() })
+});
+
+const reportLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => renderError(res, 429, "That's a lot of reports", getTooManyAttemptsError())
+});
+
 
 // Gets home page
 app.get("/", (req, res) => {
@@ -612,6 +675,90 @@ app.post("/me/status",requireLogin, (req, res) => {
     const status = text(req.body.status).trim().replace(/\s+/g, " ").slice(0, 100);
     setStatus(res.locals.currentUser.id, status || null);
     res.redirect("/me");
+});
+
+
+//Delete accounts
+function renderDeleteAccount(res, status, values = {}) {
+    res.set("Cache-Control", "no-store");
+    res.status(status).render("delete-account", { error: null, ...values});
+}
+
+app.get("/me/delete", requireLogin, (req, res) => {
+    renderDeleteAccount(res, 200);
+});
+
+app.post("/me/delete", requireLogin, deleteAccountLimiter, async(req, res) => {
+
+    if (res.locals.currentUser.isAdmin) {
+        return renderDeleteAccount(res, 400, { error: "This account runs the site, so it can't be deleted here." });
+    }
+
+    const password = text(req.body.password);
+    const user = getUserById(res.locals.currentUser.id);
+
+    const passwordOk = password ? await bcrypt.compare(password, user.passwordHash) : false;
+    if (!passwordOk) {
+        return renderDeleteAccount(res, 400, { error: getDeleteAccountError() });
+    }
+
+    deleteAccount(user.id);
+
+    req.session.destroy(() => {
+        res.clearCookie("connect.sid");
+        res.redirect("/goodbye");
+    });
+});
+
+app.get("/goodbye", (req, res) => {
+    res.render("goodbye");
+});
+
+
+//Reporting
+app.get("/posts/:id/report", requireLogin, (req, res) => {
+    const post = findReportablePost(req, res);
+    if (!post) return;
+    renderReport(res, 200, { post });
+});
+
+app.post("/posts/:id/report", requireLogin, reportLimiter, (req, res) => {
+    const post = findReportablePost(req, res);
+    if (!post) return;
+
+    const reason = REPORT_REASONS.find(r => r.value === text(req.body.reason));
+    const note = text(req.body.note).trim().slice(0, 300);
+
+    if (!reason) {
+        return renderReport(res, 400, { post, error: getReportReasonError(), note });
+    }
+
+    addReport({
+        postId: post.id,
+        reporterId: res.locals.currentUser.id,
+        reason: reason.value,
+        note: note || null
+    });
+    res.render("report-sent", { showHelp: reason.value === "worried" });
+});
+
+app.get("/admin/reports", requireAdmin, (req, res) => {
+    const reports = getOpenReports().map(r => ({
+        ...r,
+        reasonLabel: REPORT_REASONS.find(x => x.value === r.reason)?.label || r.reason
+    }));
+    res.set("Cache-Control", "no-store");
+    res.render("admin-reports", { reports });
+});
+
+app.post("/admin/reports/:id/dismiss", requireAdmin, (req, res) => {
+    dismissReport(req.params.id);
+    res.redirect("/admin/reports");
+});
+
+app.post("/admin/posts/:id/remove", requireAdmin, (req, res) => {
+    deletePost(req.params.id);
+    res.redirect("/admin/reports");
 });
 
 

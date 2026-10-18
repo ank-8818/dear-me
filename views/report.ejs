@@ -1,0 +1,36 @@
+<%- include("./partials/header.ejs") %>
+
+<section class="compose">
+    <% if (error) { %>
+        <p class="form-error" role="alert"><%= error %></p>
+    <% } %>
+
+    <div class="register-intro">
+        <h1>Report a post</h1>
+        <p>Reports are read by a person, and the writer is never told who sent one. If you're worried someone is in danger, choose "I'm worried about the writer".</p>
+    </div>
+
+    <form action="/posts/<%= post.id %>/report" method="POST">
+        <fieldset class="visibility-picker">
+            <legend>What's wrong?</legend>
+            <% reasons.forEach(r => { %>
+                <label class="visibility-option">
+                    <input type="radio" name="reason" value="<%= r.value %>" <%= reason === r.value ? "checked" : "" %> required>
+                    <span><%= r.label %></span>
+                </label>
+            <% }) %>
+        </fieldset>
+
+        <div class="field">
+            <label for="note">Anything else I should know? (optional)</label>
+            <textarea id="note" name="note" maxlength="300"><%= note %></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn--solid">Send report</button>
+            <a href="/posts/<%= post.id %>" class="btn">Cancel</a>
+        </div>
+    </form>
+</section>
+
+<%- include("./partials/footer.ejs") %>

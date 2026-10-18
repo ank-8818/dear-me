@@ -31,6 +31,19 @@ db.exec(`
 `);
 
 db.exec(`
+        CREATE TABLE IF NOT EXISTS reports (
+        id INTEGER PRIMARY KEY,
+        post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+        reporter_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        reason TEXT NOT NULL,
+        note TEXT,
+        status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'dismissed')),
+        created_at TEXT NOT NULL,
+        UNIQUE (post_id, reporter_id)
+    )
+`)
+
+db.exec(`
     CREATE TABLE IF NOT EXISTS post_tags (
         post_id INTEGER NOT NULL,
         tag_slug TEXT NOT NULL,

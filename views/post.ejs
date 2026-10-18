@@ -44,6 +44,9 @@
             </details>
         </div>
     <% } %>
+    <% if (currentUser && currentUser.id !== post.authorId && !post.isPrivate) { %>
+        <p class="post-page__report"><a href="/posts/<%= post.id %>/report">Report this post</a></p>
+    <% } %>
 
     <a class="btn" href="/">Back to all thoughts</a>
         
