@@ -30,8 +30,8 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 
 const cspDirectives = {
-    "style-src": ["'self'", "https://fonts.googleapis.com"],
-    "font-src": ["'self'", "https://fonts.gstatic.com"],
+    "style-src": ["'self'"],
+    "font-src": ["'self'"],
     "img-src": ["'self'", "data:"]
 };
 if (!isProd) cspDirectives["upgrade-insecure-requests"] = null;
@@ -42,6 +42,7 @@ app.use(helmet({
 }));
 
 app.use(express.static("public"));
+app.use("/fonts", express.static("node_modules/@fontsource-variable", { maxAge: "30d", immutable: true }));
 app.use(express.urlencoded({extended: true}));
 app.use((req, res, next) => {
     if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
