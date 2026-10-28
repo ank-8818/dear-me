@@ -43,6 +43,16 @@ app.use(helmet({
 
 app.use(express.static("public"));
 app.use("/fonts", express.static("node_modules/@fontsource-variable", { maxAge: "30d", immutable: true }));
+
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => renderError(res, 429, "Slow down a little", "Too many requests from your connection. Please wait a few minutes and try again.")
+});
+app.use(globalLimiter);
+
 app.use(express.urlencoded({extended: true}));
 app.use((req, res, next) => {
     if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
