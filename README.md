@@ -67,8 +67,7 @@ This is a public app that stores people's private writing, so I treated security
 |        ---        |                     ---                                       |
 |       Server      |                Node.js, Express                               |
 |     Templates     |                     EJS                                       |
-|      Database     |                    SQLite                                     |
-|                   |  (Node's built-in `node:sqlite`), with a custom session store |
+|      Database     |                    SQLite (Node's built-in `node:sqlite`), with a custom session store |
 | Auth and security |      bcrypt, express-session, helmet, express-rate-limit      |
 |      Design       |           Hand-written CSS, Fraunces, Nunito Sans,            |
 |                   |           illustrations made in Adobe Illustrator             |
@@ -89,8 +88,7 @@ Create a `.env` file (or set these in your shell):
 |       Variable      | Purpose                                                                     |
 |         ---         | ---                                                                         |
 |   `SESSION_SECRET`  | Required. Any long random string                                            |
-| `ADMIN_PSEUDONYM`   | Optional. The pseudonym that gets access to the reports page. Register that |
-|                     | account first                                                               |
+| `ADMIN_PSEUDONYM`   | Optional. The pseudonym that gets access to the reports page. Register that account first |
 | `DATABASE_PATH`     | Optional. Where the SQLite file lives (defaults to `dear-me.db`)            |
 | `NODE_ENV`          | Set to `production` when deploying, so cookies are marked `secure`          |
 | `PORT`              | Optional. Defaults to 3000                                                  |
