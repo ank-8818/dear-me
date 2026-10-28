@@ -350,7 +350,7 @@ app.get("/", (req, res) => {
     }
 
     const page = Math.min(1000, Math.max(1, parseInt(req.query.page, 10) || 1));
-    const perPage = 2;
+    const perPage = 10;
 
     const results = getPosts({
         moodSlug: activeMood?.slug,
