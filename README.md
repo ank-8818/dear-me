@@ -69,8 +69,7 @@ This is a public app that stores people's private writing, so I treated security
 |     Templates     |                     EJS                                       |
 |      Database     |                    SQLite (Node's built-in `node:sqlite`), with a custom session store |
 | Auth and security |      bcrypt, express-session, helmet, express-rate-limit      |
-|      Design       |           Hand-written CSS, Fraunces, Nunito Sans,            |
-|                   |           illustrations made in Adobe Illustrator             |
+|      Design       |           Hand-written CSS, Fraunces, Nunito Sans, illustrations made in Adobe Illustrator             |
 |     Hosting       |                    Railway                                    |
 
 ## Run it locally
