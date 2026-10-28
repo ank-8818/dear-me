@@ -38,7 +38,7 @@ if (!isProd) cspDirectives["upgrade-insecure-requests"] = null;
 
 app.use(helmet({
     referrerPolicy: {policy: "same-origin"},
-    contentSecurityPolicy: { userDefaults: true, directives: cspDirectives }
+    contentSecurityPolicy: { useDefaults: true, directives: cspDirectives }
 }));
 
 app.use(express.static("public"));
@@ -778,7 +778,7 @@ app.use((err, req, res, next) => {
 });
 
 
-app.listen(port, "0.0.0.0", () => {
+const server = app.listen(port, "0.0.0.0", () => {
     console.log(`Server running on port ${port}`);
 });
 
